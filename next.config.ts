@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
   output: "export",
   assetPrefix,
   env: { NEXT_PUBLIC_ASSET_PREFIX: assetPrefix },
-  trailingSlash: true,
+  trailingSlash: false,
   images: { unoptimized: true },
 };
 

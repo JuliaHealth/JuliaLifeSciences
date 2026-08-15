@@ -4,6 +4,7 @@ The public site content lives in [`content.toml`](content.toml). Edit that one f
 
 - hero and section copy;
 - organizations, their logos, and optional Julia Slack channels;
+- JuliaCon talks, speakers, years, organization groupings, and YouTube links;
 - capabilities;
 - package order, descriptions, capabilities, logos, repositories, papers, documentation links, and stars;
 - testimonials, names, roles, and organizations.
@@ -11,6 +12,8 @@ The public site content lives in [`content.toml`](content.toml). Edit that one f
 Each `[[packages]]` block uses `capabilities = ["data-io", ...]` to control its filter membership and displayed capability tags. Every value must match an `id` from a `[[capabilities]]` block. Optional `paper` and `tutorial` fields can be omitted.
 
 Organization Slack links are generated from the optional `slack_channels = ["#channel-name"]` list.
+
+Each `[[talks]]` block appears on the JuliaCon talks page. Its `organization` must match an organization `id`; edit `youtube_url` to replace the embedded video.
 
 ## Local preview
 

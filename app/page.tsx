@@ -56,6 +56,7 @@ type Content = {
     topics: string[];
     proofs: string[];
     footer_note: string;
+    talks_nav: string;
   };
   sections: {
     capabilities_kicker: string;
@@ -196,6 +197,7 @@ export default function Home() {
         <a className="brand" href="#top" aria-label="JuliaLifeSciences home">
           <img src={withAssetPrefix(site.logo)} alt="JuliaLifeSciences" />
         </a>
+        <a className="header-link" href={withAssetPrefix("/talks/")}>{site.talks_nav}<span aria-hidden="true">↗</span></a>
       </header>
 
       <section className="hero shell" id="top">

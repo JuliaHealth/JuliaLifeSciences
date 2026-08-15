@@ -26,6 +26,7 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.match(html, /href="#ecosystem"[^>]*>Meet the communities/);
   assert.match(html, /Scroll to explore/);
   assert.match(html, /class="scroll-cue"[^>]*href="#ecosystem"/);
+  assert.match(html, /href="\/JuliaLifeSciences\/talks\/"[^>]*>JuliaCon talks/);
   assert.match(html, /lucide-arrow-down/);
   assert.match(html, /lucide-folder-git-2/);
   assert.match(html, /class="package-card-top"><a class="package-repo-link"/);
@@ -45,6 +46,32 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.match(html, /package-capability-tags/);
   assert.doesNotMatch(html, /carousel-controls|lucide-pause|lucide-play|Previous .* package|Next .* package/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
+});
+
+test("exports organization-grouped JuliaCon talks", async () => {
+  const html = await readFile(new URL("../dist/client/talks/index.html", import.meta.url), "utf8");
+  const content = parse(await readFile(new URL("../content.toml", import.meta.url), "utf8"));
+  const organizationIds = new Set(content.organizations.map((organization) => organization.id));
+  const videoIds = new Set();
+
+  assert.match(html, /<title>JuliaCon life-science talks/);
+  assert.match(html, /Life sciences on stage\./);
+  assert.equal(content.talks.length, 9);
+  assert.equal(html.match(/<iframe /g)?.length, content.talks.length);
+
+  for (const talk of content.talks) {
+    assert.ok(organizationIds.has(talk.organization), `${talk.title} references an unknown organization`);
+    const url = new URL(talk.youtube_url);
+    const videoId = url.hostname === "youtu.be" ? url.pathname.slice(1) : url.searchParams.get("v");
+    assert.ok(videoId, `${talk.title} needs a YouTube video ID`);
+    assert.ok(!videoIds.has(videoId), `${talk.title} duplicates a video`);
+    videoIds.add(videoId);
+    assert.match(html, new RegExp(`youtube-nocookie\\.com/embed/${videoId}`));
+  }
+
+  for (const organization of content.organizations) {
+    assert.equal(content.talks.filter((talk) => talk.organization === organization.id).length, 3);
+  }
 });
 
 test("packages define valid capability tags and organization attribution", async () => {

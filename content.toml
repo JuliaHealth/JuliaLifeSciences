@@ -17,6 +17,7 @@ scroll_cue = "Scroll to explore"
 topics = ["DNA & RNA", "Proteins", "Medical imaging", "Health", "Ecology"]
 proofs = ["Open source", "Composable", "Fast", "Reproducible"]
 footer_note = "A community showcase for the tools, people, and possibilities shaping life-science research in Julia."
+talks_nav = "JuliaCon talks"
 
 [sections]
 capabilities_kicker = "What can you do? · Hand-curated packages"
@@ -28,6 +29,9 @@ organizations_intro = "Open communities building the foundations for modern biol
 testimonials_kicker = "Community stories"
 testimonials_title = "Research moves faster in Julia."
 testimonials_intro = "The entries below are editable examples. Replace each quote, name, role, and organization with a real community story."
+talks_kicker = "From the JuliaCon archive"
+talks_title = "Life sciences on stage."
+talks_intro = "Watch researchers and community builders share the tools, applications, and ideas advancing biology, health, and ecology in Julia."
 
 [[organizations]]
 id = "biojulia"
@@ -57,6 +61,71 @@ description = "High-performance tools for biodiversity, ecosystems, phylogenetic
 url = "https://github.com/EcoJulia"
 logo = "https://github.com/EcoJulia.png?size=160"
 color = "#7857a7"
+
+# JuliaCon talks are grouped by organization. Replace any field or add another
+# `[[talks]]` block to update the talks page without changing the site code.
+[[talks]]
+organization = "biojulia"
+title = "BioJulia and Bioinformatics in Julia: Past, Present, Future"
+speaker = "Ben J. Ward"
+year = 2018
+youtube_url = "https://www.youtube.com/watch?v=6CpPd6tkokQ"
+
+[[talks]]
+organization = "biojulia"
+title = "Exploring the State of Machine Learning for Biological Data"
+speaker = "Edmund Miller"
+year = 2023
+youtube_url = "https://www.youtube.com/watch?v=Q9eYgwvJfWE"
+
+[[talks]]
+organization = "biojulia"
+title = "Structural Bioinformatics with BiochemicalAlgorithms.jl"
+speaker = "Jennifer Leclaire"
+year = 2024
+youtube_url = "https://www.youtube.com/watch?v=vAcAKdfWm64"
+
+[[talks]]
+organization = "juliahealth"
+title = "Real-Time, I/O, and Multitasking: Julia for Medical Imaging"
+speaker = "Niklas Hackelberg"
+year = 2022
+youtube_url = "https://www.youtube.com/watch?v=chZfGfAAnpE"
+
+[[talks]]
+organization = "juliahealth"
+title = "What's New with KomaMRI.jl"
+speaker = "Carlos Castillo Passi"
+year = 2025
+youtube_url = "https://www.youtube.com/watch?v=YO-nLLfV27A"
+
+[[talks]]
+organization = "juliahealth"
+title = "State of JuliaHealth"
+speaker = "Jacob Zelko"
+year = 2025
+youtube_url = "https://www.youtube.com/watch?v=fhMEMNrLUwM"
+
+[[talks]]
+organization = "ecojulia"
+title = "EcoJulia: Towards a Framework for Ecological Data Analysis in Julia"
+speaker = "Michael Borregaard"
+year = 2018
+youtube_url = "https://www.youtube.com/watch?v=R4GzK-by0ac"
+
+[[talks]]
+organization = "ecojulia"
+title = "Analyzing Species Interaction Networks in Julia"
+speaker = "Francis Banville"
+year = 2020
+youtube_url = "https://www.youtube.com/watch?v=2HxWYi2IJb0"
+
+[[talks]]
+organization = "ecojulia"
+title = "UniversalDiffEq.jl: Applying SciML to Ecology"
+speaker = "Jack H. Buckner"
+year = 2025
+youtube_url = "https://www.youtube.com/watch?v=q7nuB1vcziU"
 
 [[capabilities]]
 id = "data-io"
