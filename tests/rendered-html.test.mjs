@@ -1,0 +1,98 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import { parse } from "smol-toml";
+
+test("exports the JuliaLifeSciences homepage", async () => {
+  const html = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+
+  assert.match(html, /<title>JuliaLifeSciences/);
+  assert.match(html, /One language/);
+  assert.match(html, /BioJulia/);
+  assert.match(html, /KomaMRI\.jl/);
+  assert.match(html, /EcoSISTEM\.jl/);
+  assert.match(html, /Three communities\. One shared purpose\./);
+  assert.match(html, /Hand-curated packages/);
+  assert.match(html, /href="#possibilities"[^>]*>Explore packages/);
+  assert.match(html, /href="#ecosystem"[^>]*>Meet the communities/);
+  assert.match(html, /Scroll to explore/);
+  assert.match(html, /class="scroll-cue"[^>]*href="#ecosystem"/);
+  assert.match(html, /lucide-arrow-down/);
+  assert.match(html, /lucide-folder-git-2/);
+  assert.match(html, /class="package-card-top"><a class="package-repo-link"/);
+  assert.match(html, /lucide-book-open/);
+  assert.match(html, /lucide-file-text/);
+  assert.ok(
+    html.indexOf("Three communities. One shared purpose.") < html.indexOf("From raw data to discovery."),
+    "the ecosystem should appear before capabilities",
+  );
+  assert.equal(html.match(/aria-roledescription="carousel"/g)?.length, 1);
+  assert.doesNotMatch(html, /package-sequence-clone/);
+  assert.doesNotMatch(html, /\sinert(?:=|>)/);
+  assert.equal(html.match(/class="package-filter-input"/g)?.length, 6);
+  assert.match(html, /Show all/);
+  assert.match(html, /data-package-position/);
+  assert.match(html, /carousel-counter\.js/);
+  assert.match(html, /package-capability-tags/);
+  assert.doesNotMatch(html, /carousel-controls|lucide-pause|lucide-play|Previous .* package|Next .* package/);
+  assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
+});
+
+test("capability carousels reference showcased packages with organization attribution", async () => {
+  const source = await readFile(new URL("../content.toml", import.meta.url), "utf8");
+  const content = parse(source);
+  const packageNames = new Set(content.packages.map((pkg) => pkg.name));
+
+  for (const capability of content.capabilities) {
+    assert.ok(!("examples" in capability), `${capability.title} should not define example tags`);
+    assert.ok(capability.packages.length > 0, `${capability.title} needs packages`);
+    for (const packageName of capability.packages) {
+      assert.ok(packageNames.has(packageName), `${packageName} is not showcased`);
+    }
+  }
+
+  const interoperability = content.capabilities.find((capability) => capability.title === "Interoperability");
+  assert.deepEqual(interoperability.packages, ["PythonCall.jl", "RCall.jl", "JuliaCall"]);
+
+  for (const pkg of content.packages) {
+    assert.ok(!("tags" in pkg), `${pkg.name} should not define tags`);
+    assert.ok(!("logo" in pkg), `${pkg.name} should not define package artwork`);
+    if (!content.organizations.some((org) => org.id === pkg.organization)) {
+      assert.ok(pkg.organization_name && pkg.organization_logo && pkg.organization_color, `${pkg.name} needs organization metadata`);
+    }
+  }
+});
+
+test("renders one community-first, star-ordered package carousel with capability filters", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  const html = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const content = parse(await readFile(new URL("../content.toml", import.meta.url), "utf8"));
+  const communityIds = new Set(content.organizations.map((organization) => organization.id));
+  const expectedNames = [...content.packages]
+    .sort((a, b) => Number(!communityIds.has(a.organization)) - Number(!communityIds.has(b.organization)) || b.stars - a.stars)
+    .map((pkg) => pkg.name);
+  const renderedNames = [...html.matchAll(/<h4>([^<]+)<\/h4>/g)].map((match) => match[1]);
+
+  assert.deepEqual(renderedNames, expectedNames);
+  assert.match(source, /organizationsById\.has\(a\.organization\)/);
+  assert.match(source, /communityDifference \|\| b\.stars - a\.stars/);
+  assert.match(source, /package-filter-all/);
+  assert.match(source, /package-card:not\(\.capability-/);
+  assert.match(css, /--package-card-width:\s*calc\(\(100cqw - 42px\) \/ 4\)/);
+  assert.match(css, /@media \(max-width: 700px\)[\s\S]*--package-card-width:\s*88cqw/);
+});
+
+test("uses manual scrolling with a live position counter", async () => {
+  const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+  const counter = await readFile(new URL("../public/carousel-counter.js", import.meta.url), "utf8");
+  assert.doesNotMatch(css, /package-marquee/);
+  assert.match(css, /\.package-track\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(css, /scroll-snap-type:\s*inline proximity/);
+  assert.match(css, /scrollbar-width:\s*thin/);
+  assert.match(counter, /addEventListener\("scroll"/);
+  assert.match(counter, /data-package-position/);
+  assert.match(counter, /cards\.length/);
+  assert.doesNotMatch(source, /autoDelay|requestAnimationFrame|setIsPaused|scrollToPackage/);
+});
