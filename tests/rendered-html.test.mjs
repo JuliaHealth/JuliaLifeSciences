@@ -5,8 +5,14 @@ import { parse } from "smol-toml";
 
 test("exports the JuliaLifeSciences homepage", async () => {
   const html = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
+  const stylesheet = html.match(/href="[^\"]*\/_next\/static\/css\/([^\"]+\.css)"/);
 
   assert.match(html, /<title>JuliaLifeSciences/);
+  assert.ok(stylesheet, "the exported page should reference its stylesheet");
+  assert.match(
+    await readFile(new URL(`../dist/client/_next/static/css/${stylesheet[1]}`, import.meta.url), "utf8"),
+    /\.site-header/,
+  );
   assert.match(html, /One language/);
   assert.match(html, /BioJulia/);
   assert.match(html, /KomaMRI\.jl/);
