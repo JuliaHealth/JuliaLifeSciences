@@ -87,29 +87,42 @@ export default function TalksPage() {
                   <span>{organization.description}</span>
                 </div>
               </div>
-              <div className="talk-grid">
-                {organizationTalks.map((talk) => {
-                  const videoId = youtubeId(talk.youtube_url);
-                  return (
-                    <article className="talk-card" key={talk.youtube_url}>
-                      <div className="talk-video">
-                        <iframe
-                          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
-                          title={talk.title}
-                          loading="lazy"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      </div>
-                      <div className="talk-copy">
-                        <p>JuliaCon {talk.year}</p>
-                        <h3>{talk.title}</h3>
-                        <span>{talk.speaker}</span>
-                        <a href={talk.youtube_url} target="_blank" rel="noreferrer">Watch on YouTube <i aria-hidden="true">↗</i></a>
-                      </div>
-                    </article>
-                  );
-                })}
+              <div className="talk-carousel">
+                <div className="talk-carousel-meta">
+                  <span>Scroll talks</span>
+                  <output data-talk-position aria-live="polite">1 / {organizationTalks.length}</output>
+                </div>
+                <div
+                  className="talk-track"
+                  role="region"
+                  aria-roledescription="carousel"
+                  aria-label={`${organization.name} talks in content order`}
+                >
+                  <div className="talk-grid">
+                    {organizationTalks.map((talk) => {
+                      const videoId = youtubeId(talk.youtube_url);
+                      return (
+                        <article className="talk-card" key={talk.youtube_url}>
+                          <div className="talk-video">
+                            <iframe
+                              src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                              title={talk.title}
+                              loading="lazy"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                            />
+                          </div>
+                          <div className="talk-copy">
+                            <p>JuliaCon {talk.year}</p>
+                            <h3>{talk.title}</h3>
+                            <span>{talk.speaker}</span>
+                            <a href={talk.youtube_url} target="_blank" rel="noreferrer">Watch on YouTube <i aria-hidden="true">↗</i></a>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </section>
           );

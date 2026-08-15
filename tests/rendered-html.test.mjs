@@ -32,6 +32,8 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.match(html, /class="package-card-top"><a class="package-repo-link"/);
   assert.match(html, /lucide-book-open/);
   assert.match(html, /lucide-file-text/);
+  assert.match(html, /class="package-documentation-link"/);
+  assert.match(html, /class="package-paper-link"/);
   assert.ok(
     html.indexOf("Three communities. One shared purpose.") < html.indexOf("From raw data to discovery."),
     "the ecosystem should appear before capabilities",
@@ -58,6 +60,8 @@ test("exports organization-grouped JuliaCon talks", async () => {
   assert.match(html, /Life sciences on stage\./);
   assert.equal(content.talks.length, 9);
   assert.equal(html.match(/<iframe /g)?.length, content.talks.length);
+  assert.equal(html.match(/aria-roledescription="carousel"/g)?.length, content.organizations.length);
+  assert.equal(html.match(/<output data-talk-position/g)?.length, content.organizations.length);
 
   for (const talk of content.talks) {
     assert.ok(organizationIds.has(talk.organization), `${talk.title} references an unknown organization`);
@@ -72,6 +76,14 @@ test("exports organization-grouped JuliaCon talks", async () => {
   for (const organization of content.organizations) {
     assert.equal(content.talks.filter((talk) => talk.organization === organization.id).length, 3);
   }
+
+  const expectedTitles = content.organizations.flatMap((organization) =>
+    content.talks.filter((talk) => talk.organization === organization.id).map((talk) => talk.title)
+  );
+  const renderedTitles = [...html.matchAll(/<h3>([^<]+)<\/h3>/g)].map((match) =>
+    match[1].replaceAll("&amp;", "&").replaceAll("&#x27;", "'")
+  );
+  assert.deepEqual(renderedTitles, expectedTitles, "talks should follow content.toml order within each organization");
 });
 
 test("packages define valid capability tags and organization attribution", async () => {
@@ -150,4 +162,11 @@ test("uses manual scrolling with a live position counter", async () => {
   assert.match(counter, /data-package-position/);
   assert.match(counter, /cards\.length/);
   assert.doesNotMatch(source, /autoDelay|requestAnimationFrame|setIsPaused|scrollToPackage/);
+  assert.match(css, /\.talk-track\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(css, /--talk-card-width:\s*calc\(\(100cqw - 32px\) \/ 3\)/);
+  assert.match(css, /@media \(max-width: 700px\)[\s\S]*--talk-card-width:\s*88cqw/);
+  assert.match(counter, /\.talk-carousel/);
+  assert.match(counter, /data-talk-position/);
+  assert.match(css, /\.package-links\s*\{[^}]*justify-content:\s*flex-start/);
+  assert.match(css, /\.package-paper-link\s*\{[^}]*margin-left:\s*auto/);
 });

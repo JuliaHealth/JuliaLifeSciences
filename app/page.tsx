@@ -149,8 +149,8 @@ function PackageCarousel({
                 const packageCapabilities = capabilities.filter((capability) => pkg.capabilities.includes(capability.id));
                 const capabilityClasses = packageCapabilities.map((capability) => `capability-${capability.id}`).join(" ");
                 const extraLinks = [
-                  { label: "Documentation", href: pkg.tutorial, Icon: BookOpen },
-                  { label: "Paper", href: pkg.paper, Icon: FileText },
+                  { label: "Documentation", href: pkg.tutorial, Icon: BookOpen, className: "package-documentation-link" },
+                  { label: "Paper", href: pkg.paper, Icon: FileText, className: "package-paper-link" },
                 ];
 
                 return (
@@ -173,8 +173,8 @@ function PackageCarousel({
                     <p>{pkg.description}</p>
                     {pkg.tutorial || pkg.paper ? (
                       <div className="package-links">
-                        {extraLinks.map(({ label, href, Icon }) => href ? (
-                          <a href={href} key={label} target="_blank" rel="noreferrer"><Icon aria-hidden="true" />{label}</a>
+                        {extraLinks.map(({ label, href, Icon, className }) => href ? (
+                          <a className={className} href={href} key={label} target="_blank" rel="noreferrer"><Icon aria-hidden="true" />{label}</a>
                         ) : null)}
                       </div>
                     ) : null}

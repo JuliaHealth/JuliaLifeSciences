@@ -1,16 +1,16 @@
 (() => {
-  function visibleCards(track) {
-    return Array.from(track.querySelectorAll(".package-card")).filter(
+  function visibleCards(track, cardSelector) {
+    return Array.from(track.querySelectorAll(cardSelector)).filter(
       (card) => getComputedStyle(card).display !== "none",
     );
   }
 
-  function updateCounter(showcase) {
-    const track = showcase.querySelector(".package-track");
-    const output = showcase.querySelector("[data-package-position]");
+  function updateCounter(showcase, config) {
+    const track = showcase.querySelector(config.trackSelector);
+    const output = showcase.querySelector(config.outputSelector);
     if (!track || !output) return;
 
-    const cards = visibleCards(track);
+    const cards = visibleCards(track, config.cardSelector);
     if (!cards.length) {
       output.textContent = "0 / 0";
       return;
@@ -25,8 +25,8 @@
     output.textContent = `${currentIndex + 1} / ${cards.length}`;
   }
 
-  function initializeCarousel(showcase) {
-    const track = showcase.querySelector(".package-track");
+  function initializeCarousel(showcase, config) {
+    const track = showcase.querySelector(config.trackSelector);
     if (!track) return;
 
     let updateScheduled = false;
@@ -35,21 +35,33 @@
       updateScheduled = true;
       requestAnimationFrame(() => {
         updateScheduled = false;
-        updateCounter(showcase);
+        updateCounter(showcase, config);
       });
     };
 
     track.addEventListener("scroll", scheduleUpdate, { passive: true });
-    showcase.addEventListener("change", (event) => {
-      if (!event.target.classList.contains("package-filter-input")) return;
-      track.scrollLeft = 0;
-      scheduleUpdate();
-    });
-    updateCounter(showcase);
+    if (config.filterSelector) {
+      showcase.addEventListener("change", (event) => {
+        if (!event.target.matches(config.filterSelector)) return;
+        track.scrollLeft = 0;
+        scheduleUpdate();
+      });
+    }
+    updateCounter(showcase, config);
   }
 
   function initialize() {
-    document.querySelectorAll(".package-showcase").forEach(initializeCarousel);
+    document.querySelectorAll(".package-showcase").forEach((showcase) => initializeCarousel(showcase, {
+      trackSelector: ".package-track",
+      cardSelector: ".package-card",
+      outputSelector: "[data-package-position]",
+      filterSelector: ".package-filter-input",
+    }));
+    document.querySelectorAll(".talk-carousel").forEach((carousel) => initializeCarousel(carousel, {
+      trackSelector: ".talk-track",
+      cardSelector: ".talk-card",
+      outputSelector: "[data-talk-position]",
+    }));
   }
 
   if (document.readyState === "loading") {
