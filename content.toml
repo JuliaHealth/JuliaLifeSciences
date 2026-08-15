@@ -1,6 +1,6 @@
 # JuliaLifeSciences content
-# Edit this file to update the site. Each capability's `packages` list controls
-# its carousel; matching `[[packages]]` blocks provide the card content.
+# Edit this file to update the site. Each package's `capabilities` list controls
+# its filters and tags; values match the IDs in `[[capabilities]]` blocks.
 # `paper` and `tutorial` are optional package fields.
 
 [site]
@@ -37,6 +37,7 @@ description = "Core tools for biological sequences, structures, genomes, and bio
 url = "https://biojulia.dev"
 logo = "https://github.com/BioJulia.png?size=160"
 color = "#2d8c5f"
+slack_channels = ["#biology", "#sciml-sysbio"]
 
 [[organizations]]
 id = "juliahealth"
@@ -46,6 +47,7 @@ description = "Open software for medical imaging, clinical data, physiology, and
 url = "https://juliahealth.org"
 logo = "https://github.com/JuliaHealth.png?size=160"
 color = "#c94b47"
+slack_channels = ["#health-and-medicine"]
 
 [[organizations]]
 id = "ecojulia"
@@ -57,39 +59,40 @@ logo = "https://github.com/EcoJulia.png?size=160"
 color = "#7857a7"
 
 [[capabilities]]
+id = "data-io"
 number = "01"
 title = "Data I/O"
 description = "Read, write, and transform the formats that life-science research depends on."
-packages = ["FASTX.jl", "DICOM.jl", "BioStructures.jl", "RasterDataSources.jl", "PubChemCrawler.jl"]
 
 [[capabilities]]
+id = "simulation"
 number = "02"
 title = "Simulation"
 description = "Model complex biological and physical systems efficiently on CPUs and GPUs."
-packages = ["KomaMRI.jl", "BloodFlowTrixi.jl", "Thunderbolt.jl", "EcoSISTEM.jl"]
 
 [[capabilities]]
+id = "data-analysis"
 number = "03"
 title = "Data analysis"
 description = "Move from experimental data to reproducible statistical and computational insight."
-packages = ["BioSequences.jl", "BioAlignments.jl", "Microbiome.jl", "NeuroAnalyzer.jl", "Diversity.jl"]
 
 [[capabilities]]
+id = "visualization"
 number = "04"
 title = "Visualization"
 description = "Explore high-dimensional results with interactive, publication-ready visual tools."
-packages = ["BioMakie.jl", "BioStructures.jl", "NeuroAnalyzer.jl", "Phylo.jl", "SpatialEcology.jl"]
 
 [[capabilities]]
+id = "interoperability"
 number = "05"
 title = "Interoperability"
 description = "Bring trusted libraries from other languages into a fast, composable Julia workflow."
-packages = ["PythonCall.jl", "RCall.jl", "JuliaCall"]
 
 # BioJulia — popular, active life-science packages first.
 [[packages]]
 name = "BioSequences.jl"
 organization = "biojulia"
+capabilities = ["data-analysis"]
 description = "Efficient data types and operations for DNA, RNA, and amino-acid sequences."
 repo = "https://github.com/BioJulia/BioSequences.jl"
 tutorial = "https://biojulia.dev/BioSequences.jl/stable/"
@@ -99,6 +102,7 @@ featured = true
 [[packages]]
 name = "BioStructures.jl"
 organization = "biojulia"
+capabilities = ["data-io", "visualization"]
 description = "Read, write, analyze, and visualize macromolecular structures, especially proteins."
 repo = "https://github.com/BioJulia/BioStructures.jl"
 tutorial = "https://biojulia.github.io/BioStructures.jl/stable/"
@@ -108,6 +112,7 @@ stars = 105
 [[packages]]
 name = "BioMakie.jl"
 organization = "biojulia"
+capabilities = ["visualization"]
 description = "Biology-focused plotting and interface tools built on the Makie visualization ecosystem."
 repo = "https://github.com/BioJulia/BioMakie.jl"
 stars = 70
@@ -115,6 +120,7 @@ stars = 70
 [[packages]]
 name = "GenomeGraphs.jl"
 organization = "biojulia"
+capabilities = ["data-analysis"]
 description = "A modern framework for representing and working with genomic graph data in Julia."
 repo = "https://github.com/BioJulia/GenomeGraphs.jl"
 stars = 70
@@ -122,6 +128,7 @@ stars = 70
 [[packages]]
 name = "FASTX.jl"
 organization = "biojulia"
+capabilities = ["data-io"]
 description = "Fast parsing and processing for FASTA and FASTQ biological sequence files."
 repo = "https://github.com/BioJulia/FASTX.jl"
 tutorial = "https://biojulia.dev/FASTX.jl/stable/"
@@ -130,6 +137,7 @@ stars = 66
 [[packages]]
 name = "BioAlignments.jl"
 organization = "biojulia"
+capabilities = ["data-analysis"]
 description = "Pairwise sequence alignment tools and common biological alignment operations."
 repo = "https://github.com/BioJulia/BioAlignments.jl"
 stars = 65
@@ -138,6 +146,7 @@ stars = 65
 [[packages]]
 name = "KomaMRI.jl"
 organization = "juliahealth"
+capabilities = ["simulation"]
 description = "GPU-accelerated, Pulseq-compatible MRI acquisition simulation for research and education."
 repo = "https://github.com/JuliaHealth/KomaMRI.jl"
 tutorial = "https://juliahealth.github.io/KomaMRI.jl/stable/"
@@ -148,6 +157,7 @@ featured = true
 [[packages]]
 name = "DICOM.jl"
 organization = "juliahealth"
+capabilities = ["data-io"]
 description = "Read and write Digital Imaging and Communications in Medicine files in Julia."
 repo = "https://github.com/JuliaHealth/DICOM.jl"
 stars = 59
@@ -155,6 +165,7 @@ stars = 59
 [[packages]]
 name = "BloodFlowTrixi.jl"
 organization = "juliahealth"
+capabilities = ["simulation"]
 description = "Efficient one- and two-dimensional arterial blood-flow simulation using Trixi.jl."
 repo = "https://github.com/JuliaHealth/BloodFlowTrixi.jl"
 stars = 43
@@ -162,6 +173,7 @@ stars = 43
 [[packages]]
 name = "PubChemCrawler.jl"
 organization = "juliahealth"
+capabilities = ["data-io"]
 description = "Utilities for programmatic access to chemical and compound data from PubChem."
 repo = "https://github.com/JuliaHealth/PubChemCrawler.jl"
 stars = 28
@@ -169,6 +181,7 @@ stars = 28
 [[packages]]
 name = "Thunderbolt.jl"
 organization = "juliahealth"
+capabilities = ["simulation"]
 description = "A high-performance framework for multiscale cardiac multiphysics simulation."
 repo = "https://github.com/JuliaHealth/Thunderbolt.jl"
 stars = 26
@@ -176,6 +189,7 @@ stars = 26
 [[packages]]
 name = "NeuroAnalyzer.jl"
 organization = "juliahealth"
+capabilities = ["data-analysis", "visualization"]
 description = "A toolbox for analysis and visualization of neurophysiological signals and recordings."
 repo = "https://github.com/JuliaHealth/NeuroAnalyzer.jl"
 stars = 21
@@ -184,6 +198,7 @@ stars = 21
 [[packages]]
 name = "SpatialEcology.jl"
 organization = "ecojulia"
+capabilities = ["visualization"]
 description = "Data types and utilities for spatial ecological analysis and community datasets."
 repo = "https://github.com/EcoJulia/SpatialEcology.jl"
 stars = 60
@@ -192,6 +207,7 @@ featured = true
 [[packages]]
 name = "Microbiome.jl"
 organization = "ecojulia"
+capabilities = ["data-analysis"]
 description = "Tools for analysis of microbiome and microbial-community abundance data."
 repo = "https://github.com/EcoJulia/Microbiome.jl"
 stars = 48
@@ -199,6 +215,7 @@ stars = 48
 [[packages]]
 name = "EcoSISTEM.jl"
 organization = "ecojulia"
+capabilities = ["simulation"]
 description = "A computational framework for simulating ecosystems, biodiversity, and environmental change."
 repo = "https://github.com/EcoJulia/EcoSISTEM.jl"
 stars = 46
@@ -206,6 +223,7 @@ stars = 46
 [[packages]]
 name = "Phylo.jl"
 organization = "ecojulia"
+capabilities = ["visualization"]
 description = "Create, manipulate, simulate, and visualize phylogenetic trees and traits."
 repo = "https://github.com/EcoJulia/Phylo.jl"
 stars = 37
@@ -213,6 +231,7 @@ stars = 37
 [[packages]]
 name = "Diversity.jl"
 organization = "ecojulia"
+capabilities = ["data-analysis"]
 description = "Measure and partition alpha, beta, and gamma diversity across ecological communities."
 repo = "https://github.com/EcoJulia/Diversity.jl"
 paper = "https://doi.org/10.48550/arXiv.1404.6520"
@@ -221,6 +240,7 @@ stars = 35
 [[packages]]
 name = "RasterDataSources.jl"
 organization = "ecojulia"
+capabilities = ["data-io"]
 description = "Download and use common global raster datasets in ecological Julia workflows."
 repo = "https://github.com/EcoJulia/RasterDataSources.jl"
 stars = 25
@@ -230,6 +250,7 @@ stars = 25
 [[packages]]
 name = "PythonCall.jl"
 organization = "juliapy"
+capabilities = ["interoperability"]
 organization_name = "JuliaPy"
 organization_logo = "https://avatars.githubusercontent.com/u/22030672?v=4"
 organization_color = "#4063d8"
@@ -242,6 +263,7 @@ featured = true
 [[packages]]
 name = "RCall.jl"
 organization = "juliainterop"
+capabilities = ["interoperability"]
 organization_name = "JuliaInterop"
 organization_logo = "https://avatars.githubusercontent.com/u/20260648?v=4"
 organization_color = "#9558b2"
@@ -253,6 +275,7 @@ stars = 337
 [[packages]]
 name = "JuliaCall"
 organization = "juliainterop"
+capabilities = ["interoperability"]
 organization_name = "JuliaInterop"
 organization_logo = "https://avatars.githubusercontent.com/u/20260648?v=4"
 organization_color = "#9558b2"

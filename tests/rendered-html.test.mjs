@@ -15,6 +15,9 @@ test("exports the JuliaLifeSciences homepage", async () => {
   );
   assert.match(html, /One language/);
   assert.match(html, /BioJulia/);
+  assert.match(html, /href="https:\/\/julialang\.slack\.com\/app_redirect\?channel=biology"[^>]*>#biology/);
+  assert.match(html, /href="https:\/\/julialang\.slack\.com\/app_redirect\?channel=sciml-sysbio"[^>]*>#sciml-sysbio/);
+  assert.match(html, /href="https:\/\/julialang\.slack\.com\/app_redirect\?channel=health-and-medicine"[^>]*>#health-and-medicine/);
   assert.match(html, /KomaMRI\.jl/);
   assert.match(html, /EcoSISTEM\.jl/);
   assert.match(html, /Three communities\. One shared purpose\./);
@@ -44,25 +47,42 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
 
-test("capability carousels reference showcased packages with organization attribution", async () => {
+test("packages define valid capability tags and organization attribution", async () => {
   const source = await readFile(new URL("../content.toml", import.meta.url), "utf8");
   const content = parse(source);
-  const packageNames = new Set(content.packages.map((pkg) => pkg.name));
+  const capabilityIds = new Set(content.capabilities.map((capability) => capability.id));
 
-  for (const capability of content.capabilities) {
-    assert.ok(!("examples" in capability), `${capability.title} should not define example tags`);
-    assert.ok(capability.packages.length > 0, `${capability.title} needs packages`);
-    for (const packageName of capability.packages) {
-      assert.ok(packageNames.has(packageName), `${packageName} is not showcased`);
+  assert.deepEqual(
+    content.organizations.filter((org) => org.slack_channels).map((org) => [org.id, org.slack_channels]),
+    [["biojulia", ["#biology", "#sciml-sysbio"]], ["juliahealth", ["#health-and-medicine"]]],
+  );
+  for (const organization of content.organizations) {
+    for (const channel of organization.slack_channels ?? []) {
+      assert.match(channel, /^#[a-z0-9-]+$/, `${organization.name} has an invalid Slack channel`);
     }
   }
 
-  const interoperability = content.capabilities.find((capability) => capability.title === "Interoperability");
-  assert.deepEqual(interoperability.packages, ["PythonCall.jl", "RCall.jl", "JuliaCall"]);
+  assert.equal(capabilityIds.size, content.capabilities.length, "capability IDs should be unique");
+  for (const capability of content.capabilities) {
+    assert.ok(!("examples" in capability), `${capability.title} should not define example tags`);
+    assert.ok(!("packages" in capability), `${capability.title} should not list packages`);
+    assert.match(capability.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+    assert.ok(content.packages.some((pkg) => pkg.capabilities.includes(capability.id)), `${capability.title} needs packages`);
+  }
+
+  assert.deepEqual(
+    content.packages.filter((pkg) => pkg.capabilities.includes("interoperability")).map((pkg) => pkg.name),
+    ["PythonCall.jl", "RCall.jl", "JuliaCall"],
+  );
 
   for (const pkg of content.packages) {
     assert.ok(!("tags" in pkg), `${pkg.name} should not define tags`);
     assert.ok(!("logo" in pkg), `${pkg.name} should not define package artwork`);
+    assert.ok(pkg.capabilities.length > 0, `${pkg.name} needs at least one capability`);
+    assert.equal(new Set(pkg.capabilities).size, pkg.capabilities.length, `${pkg.name} has duplicate capabilities`);
+    for (const capabilityId of pkg.capabilities) {
+      assert.ok(capabilityIds.has(capabilityId), `${pkg.name} references unknown capability ${capabilityId}`);
+    }
     if (!content.organizations.some((org) => org.id === pkg.organization)) {
       assert.ok(pkg.organization_name && pkg.organization_logo && pkg.organization_color, `${pkg.name} needs organization metadata`);
     }
@@ -83,6 +103,8 @@ test("renders one community-first, star-ordered package carousel with capability
   assert.deepEqual(renderedNames, expectedNames);
   assert.match(source, /organizationsById\.has\(a\.organization\)/);
   assert.match(source, /communityDifference \|\| b\.stars - a\.stars/);
+  assert.match(source, /pkg\.capabilities\.includes\(capability\.id\)/);
+  assert.doesNotMatch(source, /capability\.packages/);
   assert.match(source, /package-filter-all/);
   assert.match(source, /package-card:not\(\.capability-/);
   assert.match(css, /--package-card-width:\s*calc\(\(100cqw - 42px\) \/ 4\)/);

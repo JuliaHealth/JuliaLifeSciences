@@ -3,12 +3,14 @@
 The public site content lives in [`content.toml`](content.toml). Edit that one file to change:
 
 - hero and section copy;
-- organizations and their logos;
+- organizations, their logos, and optional Julia Slack channels;
 - capabilities;
-- package order, descriptions, logos, repositories, papers, tutorials, tags, and stars;
+- package order, descriptions, capabilities, logos, repositories, papers, documentation links, and stars;
 - testimonials, names, roles, and organizations.
 
-Each capability carousel uses its `packages = [...]` list. Reorder those names or add another showcased package name to change a carousel without touching the code. Package details come from the matching `[[packages]]` block; optional `paper` and `tutorial` fields can be omitted.
+Each `[[packages]]` block uses `capabilities = ["data-io", ...]` to control its filter membership and displayed capability tags. Every value must match an `id` from a `[[capabilities]]` block. Optional `paper` and `tutorial` fields can be omitted.
+
+Organization Slack links are generated from the optional `slack_channels = ["#channel-name"]` list.
 
 ## Local preview
 

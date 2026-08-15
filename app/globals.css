@@ -132,8 +132,10 @@ h2 { margin: 0; font-size: clamp(38px, 5vw, 60px); line-height: 1.02; letter-spa
 .org-card > p { margin: auto 0 13px; color: var(--org-color); text-transform: uppercase; letter-spacing: .13em; font-size: 11px; font-weight: 800; }
 .org-card h3 { margin: 0 0 14px; font-size: 31px; letter-spacing: -.035em; }
 .org-card > span:not(.card-number) { min-height: 62px; color: var(--muted); font-size: 14px; line-height: 1.55; }
-.org-card b { display: flex; justify-content: space-between; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; }
-.org-card b i { font-style: normal; font-size: 17px; }
+.org-links { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px 18px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 13px; font-weight: 700; }
+.org-links a { display: inline-flex; align-items: center; gap: 6px; }
+.org-links a:hover { color: var(--org-color); }
+.org-links i { font-style: normal; font-size: 17px; }
 
 .testimonials-section { padding: 112px 0 124px; }
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--ink); }

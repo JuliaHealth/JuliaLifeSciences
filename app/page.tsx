@@ -11,18 +11,20 @@ type Organization = {
   logo: string;
   color: string;
   focus: string;
+  slack_channels?: string[];
 };
 
 type Capability = {
+  id: string;
   number: string;
   title: string;
   description: string;
-  packages: string[];
 };
 
 type Package = {
   name: string;
   organization: string;
+  capabilities: string[];
   organization_name?: string;
   organization_logo?: string;
   organization_color?: string;
@@ -79,10 +81,6 @@ function withAssetPrefix(path: string) {
   return path.startsWith("/") ? `${assetPrefix}${path}` : path;
 }
 
-function capabilitySlug(title: string) {
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-}
-
 function PackageCarousel({
   capabilities,
   packages,
@@ -101,10 +99,9 @@ function PackageCarousel({
     `#package-filter-all:checked ~ .package-filters label[for="package-filter-all"] { background: var(--white); border-color: var(--white); color: var(--ink); }`,
     `#package-filter-all:focus-visible ~ .package-filters label[for="package-filter-all"] { outline: 2px solid #7dd0a5; outline-offset: 3px; }`,
     ...capabilities.flatMap((capability) => {
-      const slug = capabilitySlug(capability.title);
-      const id = `package-filter-${slug}`;
+      const id = `package-filter-${capability.id}`;
       return [
-        `#${id}:checked ~ .package-track .package-card:not(.capability-${slug}) { display: none; }`,
+        `#${id}:checked ~ .package-track .package-card:not(.capability-${capability.id}) { display: none; }`,
         `#${id}:checked ~ .package-filters label[for="${id}"] { background: var(--white); border-color: var(--white); color: var(--ink); }`,
         `#${id}:focus-visible ~ .package-filters label[for="${id}"] { outline: 2px solid #7dd0a5; outline-offset: 3px; }`,
       ];
@@ -120,8 +117,8 @@ function PackageCarousel({
           className="package-filter-input"
           type="radio"
           name="package-filter"
-          id={`package-filter-${capabilitySlug(capability.title)}`}
-          key={capability.number}
+          id={`package-filter-${capability.id}`}
+          key={capability.id}
         />
       ))}
 
@@ -129,7 +126,7 @@ function PackageCarousel({
         <span>Filter by capability</span>
         <label htmlFor="package-filter-all">Show all</label>
         {capabilities.map((capability) => (
-          <label htmlFor={`package-filter-${capabilitySlug(capability.title)}`} key={capability.number}>{capability.title}</label>
+          <label htmlFor={`package-filter-${capability.id}`} key={capability.id}>{capability.title}</label>
         ))}
         <output className="package-position" data-package-position aria-live="polite">1 / {sortedPackages.length}</output>
       </div>
@@ -148,10 +145,10 @@ function PackageCarousel({
                   logo: pkg.organization_logo ?? "",
                   color: pkg.organization_color ?? "#4063d8",
                 };
-                const packageCapabilities = capabilities.filter((capability) => capability.packages.includes(pkg.name));
-                const capabilityClasses = packageCapabilities.map((capability) => `capability-${capabilitySlug(capability.title)}`).join(" ");
+                const packageCapabilities = capabilities.filter((capability) => pkg.capabilities.includes(capability.id));
+                const capabilityClasses = packageCapabilities.map((capability) => `capability-${capability.id}`).join(" ");
                 const extraLinks = [
-                  { label: "Tutorial", href: pkg.tutorial, Icon: BookOpen },
+                  { label: "Documentation", href: pkg.tutorial, Icon: BookOpen },
                   { label: "Paper", href: pkg.paper, Icon: FileText },
                 ];
 
@@ -168,7 +165,7 @@ function PackageCarousel({
                     </div>
                     <div className="package-capability-tags" aria-label={`${pkg.name} capabilities`}>
                       {packageCapabilities.map((capability) => (
-                        <label htmlFor={`package-filter-${capabilitySlug(capability.title)}`} key={capability.number}>{capability.title}</label>
+                        <label htmlFor={`package-filter-${capability.id}`} key={capability.id}>{capability.title}</label>
                       ))}
                     </div>
                     <h4>{pkg.name}</h4>
@@ -244,14 +241,27 @@ export default function Home() {
         </div>
         <div className="org-grid">
           {organizations.map((org, index) => (
-            <a className="org-card" href={org.url} key={org.id} target="_blank" rel="noreferrer" style={{ "--org-color": org.color } as CSSProperties}>
+            <article className="org-card" key={org.id} style={{ "--org-color": org.color } as CSSProperties}>
               <span className="card-number">0{index + 1}</span>
               <img src={org.logo} alt={`${org.name} logo`} />
               <p>{org.focus}</p>
               <h3>{org.name}</h3>
               <span>{org.description}</span>
-              <b>Visit community <i aria-hidden="true">↗</i></b>
-            </a>
+              <div className="org-links">
+                <a href={org.url} target="_blank" rel="noreferrer">Website <i aria-hidden="true">↗</i></a>
+                {org.slack_channels?.map((channel) => (
+                  <a
+                    href={`https://julialang.slack.com/app_redirect?channel=${encodeURIComponent(channel.replace(/^#/, ""))}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${channel} on Julia Slack`}
+                    key={channel}
+                  >
+                    {channel} <i aria-hidden="true">↗</i>
+                  </a>
+                ))}
+              </div>
+            </article>
           ))}
         </div>
       </section>
