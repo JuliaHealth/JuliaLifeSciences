@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { parse } from "smol-toml";
 import contentSource from "virtual:site-content";
+import { CarouselCounter } from "../carousel-counter";
 
 type Organization = {
   id: string;
@@ -90,7 +91,7 @@ export default function TalksPage() {
               <div className="talk-carousel">
                 <div className="talk-carousel-meta">
                   <span>Scroll talks</span>
-                  <output data-talk-position aria-live="polite">1 / {organizationTalks.length}</output>
+                  <CarouselCounter kind="talks" total={organizationTalks.length} />
                 </div>
                 <div
                   className="talk-track"

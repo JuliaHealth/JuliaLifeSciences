@@ -222,6 +222,7 @@ footer { background: var(--ink); color: var(--white); }
 }
 
 @media (max-width: 700px) {
+  .orbit-two, .scroll-cue-icon svg { animation: none; }
   .package-track { --package-card-width: 88cqw; }
   .talk-track { --talk-card-width: 88cqw; }
 }

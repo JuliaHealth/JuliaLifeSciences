@@ -165,7 +165,7 @@ capabilities = ["data-analysis"]
 description = "Efficient data types and operations for DNA, RNA, and amino-acid sequences."
 repo = "https://github.com/BioJulia/BioSequences.jl"
 tutorial = "https://biojulia.dev/BioSequences.jl/stable/"
-stars = 159
+stars = 160
 featured = true
 
 [[packages]]
@@ -176,7 +176,7 @@ description = "Read, write, analyze, and visualize macromolecular structures, es
 repo = "https://github.com/BioJulia/BioStructures.jl"
 tutorial = "https://biojulia.github.io/BioStructures.jl/stable/"
 paper = "https://doi.org/10.1093/bioinformatics/btaa502"
-stars = 105
+stars = 106
 
 [[packages]]
 name = "BioMakie.jl"
@@ -184,7 +184,7 @@ organization = "biojulia"
 capabilities = ["visualization"]
 description = "Biology-focused plotting and interface tools built on the Makie visualization ecosystem."
 repo = "https://github.com/BioJulia/BioMakie.jl"
-stars = 70
+stars = 71
 
 [[packages]]
 name = "GenomeGraphs.jl"

@@ -8,7 +8,6 @@ const content = parse(contentSource) as unknown as {
 };
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://julialifesciences.org";
-const assetPrefix = process.env.NEXT_PUBLIC_ASSET_PREFIX ?? "";
 const siteRoot = siteUrl.replace(/\/$/, "");
 const socialImage = `${siteRoot}/og.png`;
 const icon = `${siteRoot}/JuliaBHFlogo.svg`;
@@ -37,7 +36,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <head><script src={`${assetPrefix}/carousel-counter.js`} defer /></head>
       <body>{children}</body>
     </html>
   );

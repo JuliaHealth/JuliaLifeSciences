@@ -2,6 +2,7 @@ import { type CSSProperties } from "react";
 import { ArrowDown, BookOpen, FileText, FolderGit2 } from "lucide-react";
 import { parse } from "smol-toml";
 import contentSource from "virtual:site-content";
+import { CarouselCounter } from "./carousel-counter";
 
 type Organization = {
   id: string;
@@ -129,7 +130,7 @@ function PackageCarousel({
         {capabilities.map((capability) => (
           <label htmlFor={`package-filter-${capability.id}`} key={capability.id}>{capability.title}</label>
         ))}
-        <output className="package-position" data-package-position aria-live="polite">1 / {sortedPackages.length}</output>
+        <CarouselCounter kind="packages" total={sortedPackages.length} className="package-position" />
       </div>
 
       <div

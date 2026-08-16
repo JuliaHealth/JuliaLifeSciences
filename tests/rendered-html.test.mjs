@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { parse } from "smol-toml";
+import { githubRepository, updatePackageStars } from "../scripts/refresh-stars.mjs";
 
 test("exports the JuliaLifeSciences homepage", async () => {
   const html = await readFile(new URL("../dist/client/index.html", import.meta.url), "utf8");
@@ -44,7 +45,7 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.equal(html.match(/class="package-filter-input"/g)?.length, 6);
   assert.match(html, /Show all/);
   assert.match(html, /data-package-position/);
-  assert.match(html, /carousel-counter\.js/);
+  assert.doesNotMatch(html, /carousel-counter\.js/);
   assert.match(html, /package-capability-tags/);
   assert.doesNotMatch(html, /carousel-controls|lucide-pause|lucide-play|Previous .* package|Next .* package/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
@@ -128,6 +129,25 @@ test("packages define valid capability tags and organization attribution", async
   }
 });
 
+test("refreshes package stars without reordering content.toml", async () => {
+  const source = await readFile(new URL("../content.toml", import.meta.url), "utf8");
+  const before = parse(source);
+  const starsByRepo = new Map(before.packages.map((pkg, index) => [pkg.repo, 10_000 + index]));
+  const after = parse(updatePackageStars(source, starsByRepo));
+
+  assert.deepEqual(after.packages.map((pkg) => pkg.name), before.packages.map((pkg) => pkg.name));
+  assert.deepEqual(after.packages.map((pkg) => pkg.stars), before.packages.map((_, index) => 10_000 + index));
+  assert.deepEqual(
+    after.packages.map((pkg) => ({ ...pkg, stars: undefined })),
+    before.packages.map((pkg) => ({ ...pkg, stars: undefined })),
+  );
+  assert.deepEqual({ ...after, packages: undefined }, { ...before, packages: undefined });
+  assert.deepEqual(githubRepository("https://github.com/JuliaHealth/KomaMRI.jl"), {
+    owner: "JuliaHealth",
+    repository: "KomaMRI.jl",
+  });
+});
+
 test("renders one community-first, star-ordered package carousel with capability filters", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
@@ -146,27 +166,38 @@ test("renders one community-first, star-ordered package carousel with capability
   assert.doesNotMatch(source, /capability\.packages/);
   assert.match(source, /package-filter-all/);
   assert.match(source, /package-card:not\(\.capability-/);
+  assert.match(source, /<CarouselCounter kind="packages"/);
+  assert.doesNotMatch(source, /suppressHydrationWarning/);
   assert.match(css, /--package-card-width:\s*calc\(\(100cqw - 42px\) \/ 4\)/);
   assert.match(css, /@media \(max-width: 700px\)[\s\S]*--package-card-width:\s*88cqw/);
 });
 
-test("uses manual scrolling with a live position counter", async () => {
+test("uses manual scrolling with a hydration-safe live position counter", async () => {
   const source = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
-  const counter = await readFile(new URL("../public/carousel-counter.js", import.meta.url), "utf8");
+  const counter = await readFile(new URL("../app/carousel-counter.tsx", import.meta.url), "utf8");
+  const talksSource = await readFile(new URL("../app/talks/page.tsx", import.meta.url), "utf8");
+  const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
   assert.doesNotMatch(css, /package-marquee/);
   assert.match(css, /\.package-track\s*\{[^}]*overflow-x:\s*auto/);
   assert.match(css, /scroll-snap-type:\s*inline proximity/);
   assert.match(css, /scrollbar-width:\s*thin/);
   assert.match(counter, /addEventListener\("scroll"/);
+  assert.match(counter, /useEffect/);
   assert.match(counter, /data-package-position/);
   assert.match(counter, /cards\.length/);
+  assert.match(counter, /track\.scrollLeft \/ cardStep/);
+  assert.doesNotMatch(counter, /getBoundingClientRect/);
   assert.doesNotMatch(source, /autoDelay|requestAnimationFrame|setIsPaused|scrollToPackage/);
   assert.match(css, /\.talk-track\s*\{[^}]*overflow-x:\s*auto/);
   assert.match(css, /--talk-card-width:\s*calc\(\(100cqw - 32px\) \/ 3\)/);
   assert.match(css, /@media \(max-width: 700px\)[\s\S]*--talk-card-width:\s*88cqw/);
   assert.match(counter, /\.talk-carousel/);
   assert.match(counter, /data-talk-position/);
+  assert.match(talksSource, /<CarouselCounter kind="talks"/);
+  assert.doesNotMatch(talksSource, /suppressHydrationWarning/);
+  assert.doesNotMatch(layout, /carousel-counter\.js|<script/);
   assert.match(css, /\.package-links\s*\{[^}]*justify-content:\s*flex-start/);
   assert.match(css, /\.package-paper-link\s*\{[^}]*margin-left:\s*auto/);
+  assert.match(css, /@media \(max-width: 700px\)[\s\S]*?\.orbit-two, \.scroll-cue-icon svg \{ animation: none; \}/);
 });
