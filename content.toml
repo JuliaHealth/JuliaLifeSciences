@@ -354,20 +354,20 @@ tutorial = "https://juliainterop.github.io/JuliaCall/"
 paper = "https://doi.org/10.21105/joss.01284"
 stars = 287
 
-[[testimonials]]
-quote = "Now that I run my analysis in Julia, the same pipeline is 20× faster — without splitting it across three languages."
-name = "Add a researcher name"
-role = "Research scientist"
-organization = "Add their organization"
+# [[testimonials]]
+# quote = "Now that I run my analysis in Julia, the same pipeline is 20× faster — without splitting it across three languages."
+# name = "Add a researcher name"
+# role = "Research scientist"
+# organization = "Add their organization"
 
-[[testimonials]]
-quote = "Our simulation went from an overnight job to something we can explore interactively during a meeting."
-name = "Add a researcher name"
-role = "Computational scientist"
-organization = "Add their organization"
+# [[testimonials]]
+# quote = "Our simulation went from an overnight job to something we can explore interactively during a meeting."
+# name = "Add a researcher name"
+# role = "Computational scientist"
+# organization = "Add their organization"
 
-[[testimonials]]
-quote = "We kept the readable code our students need and gained the performance our production workflow demands."
-name = "Add a researcher name"
-role = "Lab lead"
-organization = "Add their organization"
+# [[testimonials]]
+# quote = "We kept the readable code our students need and gained the performance our production workflow demands."
+# name = "Add a researcher name"
+# role = "Lab lead"
+# organization = "Add their organization"

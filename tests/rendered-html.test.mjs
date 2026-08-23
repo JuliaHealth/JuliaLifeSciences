@@ -47,6 +47,7 @@ test("exports the JuliaLifeSciences homepage", async () => {
   assert.match(html, /data-package-position/);
   assert.doesNotMatch(html, /carousel-counter\.js/);
   assert.match(html, /package-capability-tags/);
+  assert.doesNotMatch(html, /class="testimonials-section"/);
   assert.doesNotMatch(html, /carousel-controls|lucide-pause|lucide-play|Previous .* package|Next .* package/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
 });
@@ -91,6 +92,8 @@ test("packages define valid capability tags and organization attribution", async
   const source = await readFile(new URL("../content.toml", import.meta.url), "utf8");
   const content = parse(source);
   const capabilityIds = new Set(content.capabilities.map((capability) => capability.id));
+
+  assert.equal(content.testimonials, undefined, "commented testimonial blocks should disable the section");
 
   assert.deepEqual(
     content.organizations.filter((org) => org.slack_channels).map((org) => [org.id, org.slack_channels]),

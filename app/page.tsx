@@ -73,7 +73,7 @@ type Content = {
   organizations: Organization[];
   capabilities: Capability[];
   packages: Package[];
-  testimonials: Testimonial[];
+  testimonials?: Testimonial[];
 };
 
 const content = parse(contentSource) as unknown as Content;
@@ -190,7 +190,7 @@ function PackageCarousel({
 }
 
 export default function Home() {
-  const { site, sections, organizations, capabilities, packages, testimonials } = content;
+  const { site, sections, organizations, capabilities, packages, testimonials = [] } = content;
 
   return (
     <main>
@@ -282,32 +282,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="testimonials-section" id="testimonials">
-        <div className="shell">
-          <div className="section-heading testimonial-heading">
-            <div>
-              <p className="kicker">{sections.testimonials_kicker}</p>
-              <h2>{sections.testimonials_title}</h2>
+      {testimonials.length > 0 ? (
+        <section className="testimonials-section" id="testimonials">
+          <div className="shell">
+            <div className="section-heading testimonial-heading">
+              <div>
+                <p className="kicker">{sections.testimonials_kicker}</p>
+                <h2>{sections.testimonials_title}</h2>
+              </div>
+              <p>{sections.testimonials_intro}</p>
             </div>
-            <p>{sections.testimonials_intro}</p>
+            <div className="testimonial-grid">
+              {testimonials.map((testimonial, index) => (
+                <figure className="testimonial-card" key={`${testimonial.name}-${index}`}>
+                  <span className="quote-mark">“</span>
+                  <blockquote>{testimonial.quote}</blockquote>
+                  <figcaption>
+                    <span className="avatar-placeholder" aria-hidden="true">{testimonial.name.slice(0, 1)}</span>
+                    <div>
+                      <strong>{testimonial.name}</strong>
+                      <span>{testimonial.role ? `${testimonial.role} · ` : ""}{testimonial.organization}</span>
+                    </div>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
-          <div className="testimonial-grid">
-            {testimonials.map((testimonial, index) => (
-              <figure className="testimonial-card" key={`${testimonial.name}-${index}`}>
-                <span className="quote-mark">“</span>
-                <blockquote>{testimonial.quote}</blockquote>
-                <figcaption>
-                  <span className="avatar-placeholder" aria-hidden="true">{testimonial.name.slice(0, 1)}</span>
-                  <div>
-                    <strong>{testimonial.name}</strong>
-                    <span>{testimonial.role ? `${testimonial.role} · ` : ""}{testimonial.organization}</span>
-                  </div>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       <footer>
         <div className="shell footer-inner">
