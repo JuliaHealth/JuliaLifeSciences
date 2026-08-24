@@ -9,6 +9,8 @@ test("exports the JuliaLifeSciences homepage", async () => {
   const stylesheet = html.match(/href="[^\"]*\/_next\/static\/css\/([^\"]+\.css)"/);
 
   assert.match(html, /<title>JuliaLifeSciences/);
+  assert.match(html, /src="\/JuliaLifeSciences\/JuliaLifeSciencesLogo\.svg"/);
+  assert.doesNotMatch(html, /\/public\/JuliaLifeSciencesLogo\.svg/);
   assert.ok(stylesheet, "the exported page should reference its stylesheet");
   assert.match(
     await readFile(new URL(`../dist/client/_next/static/css/${stylesheet[1]}`, import.meta.url), "utf8"),
@@ -59,6 +61,7 @@ test("exports organization-grouped JuliaCon talks", async () => {
   const videoIds = new Set();
 
   assert.match(html, /<title>JuliaCon life-science talks/);
+  assert.match(html, /src="\/JuliaLifeSciences\/JuliaLifeSciencesLogo\.svg"/);
   assert.match(html, /Life sciences on stage\./);
   assert.equal(content.talks.length, 9);
   assert.equal(html.match(/<iframe /g)?.length, content.talks.length);
