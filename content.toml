@@ -4,7 +4,7 @@
 # `paper` and `tutorial` are optional package fields.
 
 [site]
-logo = "/JuliaBHFlogo.svg"
+logo = "/public/JuliaLifeSciencesLogo.svg"
 meta_title = "JuliaLifeSciences — One language. Every scale of life."
 meta_description = "Discover Julia packages for bioinformatics, biology, health, medicine, imaging, and ecology."
 eyebrow = "Explore the Julia life sciences ecosystem"
