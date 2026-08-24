@@ -1,17 +1,17 @@
 using Luxor
 using Colors
 
-function whiten(col::Colorant, f = 0.5)
+function whiten(col::Colorant, f=0.5)
     hsl = convert(HSL, col)
     h, s, l = hsl.h, hsl.s, hsl.l
     return convert(RGB, HSL(h, s, f))
 end
 
 function drawball(
-        pos, ballradius, col::Colorant;
-        fromlum = 0.2,
-        tolum = 1.0
-    )
+    pos, ballradius, col::Colorant;
+    fromlum=0.2,
+    tolum=1.0
+)
     @layer begin
         translate(pos)
         for i in ballradius:-0.5:1
@@ -51,12 +51,12 @@ function main(fname)
     Drawing(600, 600, fname)
     origin()
     # border
-    squircle(O, 298, 298, rt = 0.65, action = :path)
+    squircle(O, 298, 298, rt=0.65, action=:path)
     sethue("black")
     fillpreserve()
-    squircle(O, 276, 276, rt = 0.65, reversepath = true, action = :path)
+    squircle(O, 276, 276, rt=0.65, reversepath=true, action=:path)
     clip()
-    tiles = Tiler(600, 600, 2, 2, margin = 0)
+    tiles = Tiler(600, 600, 2, 2, margin=0)
     for (pos, n) in tiles
         sethue([Luxor.julia_red, Luxor.julia_green, Luxor.julia_blue, Luxor.julia_purple][mod1(n, 4)])
         box(pos, tiles.tilewidth, tiles.tilewidth, :fill)
@@ -74,4 +74,4 @@ function main(fname)
     return preview()
 end
 
-main("/tmp/tree.png")
+main("public/tree.svg")
