@@ -354,6 +354,31 @@ tutorial = "https://juliainterop.github.io/JuliaCall/"
 paper = "https://doi.org/10.21105/joss.01284"
 stars = 287
 
+[[packages]]
+name = "Catalyst.jl"
+organization = "sciml"
+capabilities = ["simulation"]
+organization_name = "SciML"
+organization_logo = "https://avatars.githubusercontent.com/u/21238080?v=4"
+organization_color = "#1b7f8c"
+description = "Model and simulate chemical reaction networks as ODEs, SDEs, or stochastic jump processes."
+repo = "https://github.com/SciML/Catalyst.jl"
+tutorial = "https://docs.sciml.ai/Catalyst/stable/"
+paper = "https://doi.org/10.1371/journal.pcbi.1011530"
+stars = 530
+
+[[packages]]
+name = "MolecularGraph.jl"
+organization = "mojaie"
+capabilities = ["data-analysis", "visualization"]
+organization_name = "mojaie"
+organization_logo = "https://avatars.githubusercontent.com/u/1174134?v=4"
+organization_color = "#b0632a"
+description = "Cheminformatics toolkit for molecular graphs, substructure search, descriptors, and structure drawing."
+repo = "https://github.com/mojaie/MolecularGraph.jl"
+tutorial = "https://mojaie.github.io/MolecularGraph.jl/dev"
+stars = 229
+
 # [[testimonials]]
 # quote = "Now that I run my analysis in Julia, the same pipeline is 20× faster — without splitting it across three languages."
 # name = "Add a researcher name"
